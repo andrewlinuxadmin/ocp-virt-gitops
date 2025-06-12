@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   name: webportal
   annotations:
-    argocd.argoproj.io/managed-by=openshift-operators
+    argocd.argoproj.io/managed-by: openshift-gitops
+    argocd.argoproj.io/sync-wave: "1"
   labels:
     app: webportal

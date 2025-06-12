@@ -3,7 +3,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "999"
+    argocd.argoproj.io/sync-wave: "3"
   labels:
     app: webportal
     kubevirt.io/dynamic-credentials-support: 'true'
