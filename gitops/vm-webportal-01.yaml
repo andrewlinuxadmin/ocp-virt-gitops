@@ -83,6 +83,9 @@ spec:
                   root:redhat
                 expire: False
               fqdn: webportal-01.example.com
+              bootcmd:
+                - mkdir -p /mnt/configmap
+                - mkdir -p /mnt/secret
               mounts:
                 - [ /dev/disk/by-id/virtio-CM0001, /mnt/configmap, auto, "defaults,ro" ]
                 - [ /dev/disk/by-id/virtio-SC0001, /mnt/secret, auto, "defaults,ro" ]
