@@ -1,0 +1,14 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: webportal
+  namespace: vmimported-user1
+spec:
+  host: webportal.apps.cluster-f4xq9.dynamic.redhatworkshops.io
+  path: /
+  to:
+    kind: Service
+    name: webportal
+    weight: 100
+  port:
+    targetPort: 80

@@ -1,0 +1,109 @@
+---
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "999"
+  labels:
+    app: webportal
+    kubevirt.io/dynamic-credentials-support: 'true'
+    vm.kubevirt.io/template: centos-stream9-server-small
+    vm.kubevirt.io/template.namespace: openshift
+    vm.kubevirt.io/template.revision: '1'
+    vm.kubevirt.io/template.version: v0.32.2
+  name: webportal-01
+  namespace: vmimported-user1
+spec:
+  dataVolumeTemplates:
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: DataVolume
+      metadata:
+        name: webportal-01
+      spec:
+        sourceRef:
+          kind: DataSource
+          name: centos-stream9
+          namespace: openshift-virtualization-os-images
+        storage:
+          resources:
+            requests:
+              storage: 30Gi
+  runStrategy: RerunOnFailure
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: small
+        vm.kubevirt.io/os: centos-stream9
+        vm.kubevirt.io/workload: server
+      creationTimestamp: null
+      labels:
+        app: webportal
+        kubevirt.io/domain: webportal
+        kubevirt.io/size: small
+        network.kubevirt.io/headlessService: headless
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 1
+          sockets: 1
+          threads: 1
+        memory:
+          guest: 2Gi
+        devices:
+          disks:
+            - disk:
+                bus: virtio
+              name: rootdisk
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+            - disk:
+                bus: virtio
+              name: environment-disk
+              serial: ENV001
+          interfaces:
+            - masquerade: {}
+              model: virtio
+              name: default
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - dataVolume:
+            name: webportal-01
+          name: rootdisk
+        - cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd:
+                list: |
+                  cloud-user:redhat1234
+                  root:redhat
+                expire: False
+              fqdn: webportal-01.example.com
+              mounts:
+                - [ /dev/disk/by-id/virtio-CM0001, /mnt/configmap, auto, "defaults,ro" ]
+                - [ /dev/disk/by-id/virtio-SC0001, /mnt/secret, auto, "defaults,ro" ]
+              packages:
+                - httpd
+                - firewalld
+                - openssh-server
+              runcmd:
+                - echo "CLOUD-INIT TEST OK" > /root/cloud-init-test.txt
+                - systemctl enable sshd
+                - systemctl start sshd
+                - systemctl enable firewalld
+                - systemctl start firewalld
+                - systemctl enable httpd
+                - systemctl start httpd
+                - firewall-cmd --permanent --add-service=ssh
+                - firewall-cmd --permanent --add-service=http
+                - firewall-cmd --permanent --add-service=https
+                - firewall-cmd --reload
+                - [ /bin/bash, -c, 'echo "<h1>VM GitOps com ArgoCD + Cloud-Init!</h1><br/><h2>Servidor: $(hostname)<br/>Env: $(cat /mnt/configmap/env)<br/>Datacenter: $(cat /mnt/configmap/datacenter)<br/>Database password: $(cat /mnt/secret/dbpassword)</h2>" > /var/www/html/index.html' ]
+          name: cloudinitdisk
+        - configMap:
+            name: webportal
+          name: environment-disk
