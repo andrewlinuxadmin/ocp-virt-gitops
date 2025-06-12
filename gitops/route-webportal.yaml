@@ -2,7 +2,7 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: webportal
-  namespace: vmimported-user1
+  namespace: webportal
 spec:
   host: webportal.apps.cluster-f4xq9.dynamic.redhatworkshops.io
   path: /

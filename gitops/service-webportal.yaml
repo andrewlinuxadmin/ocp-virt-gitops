@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: webportal
-  namespace: vmimported-user1
+  namespace: webportal
 spec:
   ports:
     - protocol: TCP

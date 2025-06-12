@@ -12,7 +12,7 @@ metadata:
     vm.kubevirt.io/template.revision: '1'
     vm.kubevirt.io/template.version: v0.32.2
   name: webportal-01
-  namespace: vmimported-user1
+  namespace: webportal
 spec:
   dataVolumeTemplates:
     - apiVersion: cdi.kubevirt.io/v1beta1
