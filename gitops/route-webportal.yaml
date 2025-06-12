@@ -14,3 +14,4 @@ spec:
     weight: 100
   port:
     targetPort: 80
+  wildcardPolicy: None
