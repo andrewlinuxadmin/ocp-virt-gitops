@@ -14,7 +14,6 @@ metadata:
   name: webportal-01
   namespace: webportal
 spec:
-  running: true
   dataVolumeTemplates:
     - apiVersion: cdi.kubevirt.io/v1beta1
       kind: DataVolume
