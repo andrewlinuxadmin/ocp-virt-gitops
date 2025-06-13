@@ -2,8 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
-  name: webportal
+    argocd.argoproj.io/sync-wave: "4"
+  name: svc-webportal
   namespace: webportal
 spec:
   ports:

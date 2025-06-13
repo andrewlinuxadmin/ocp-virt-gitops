@@ -52,32 +52,33 @@ spec:
           guest: 2Gi
         devices:
           disks:
-            - disk:
+            - name: rootdisk
+              disk:
                 bus: virtio
-              name: rootdisk
-            - disk:
+            - name: cloudinitdisk
+              disk:
                 bus: virtio
-              name: cloudinitdisk
-            - disk:
-                bus: virtio
-              name: configmap-disk
+            - name: configmap-disk
               serial: CM0001
-            - disk:
+              disk:
                 bus: virtio
-              name: secret-disk
+            - name: secret-disk
               serial: SC0001
+              disk:
+                bus: virtio
           interfaces:
-            - masquerade: {}
+            - name: default
+              masquerade: {}
               model: virtio
-              name: default
       networks:
         - name: default
           pod: {}
       volumes:
-        - dataVolume:
+        - name: rootdisk
+          dataVolume:
             name: webportal-01
-          name: rootdisk
-        - cloudInitNoCloud:
+        - name: cloudinitdisk
+          cloudInitNoCloud:
             userData: |-
               #cloud-config
               ssh_pwauth: True
@@ -110,10 +111,9 @@ spec:
                 - firewall-cmd --permanent --add-service=https
                 - firewall-cmd --reload
                 - [ /bin/bash, -c, 'echo "<h1>VM GitOps com ArgoCD + Cloud-Init!</h1><br/><h2>Servidor: $(hostname)<br/>Env: $(cat /mnt/configmap/env)<br/>Datacenter: $(cat /mnt/configmap/datacenter)<br/>Database password: $(cat /mnt/secret/dbpassword)</h2>" > /var/www/html/index.html' ]
-          name: cloudinitdisk
-        - configMap:
-            name: webportal
-          name: configmap-disk
-        - secret:
-            name: webportal
-          name: secret-disk
+        - name: configmap-disk
+          configMap:
+            name: cm-webportal
+        - name: secret-disk
+          secret:
+            secretName: sc-webportal
