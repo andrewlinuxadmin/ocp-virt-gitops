@@ -18,7 +18,7 @@ spec:
     - apiVersion: cdi.kubevirt.io/v1beta1
       kind: DataVolume
       metadata:
-        name: webportal-01
+        name: webportal-02
       spec:
         sourceRef:
           kind: DataSource
@@ -76,7 +76,7 @@ spec:
       volumes:
         - name: rootdisk
           dataVolume:
-            name: webportal-01
+            name: webportal-02
         - name: cloudinitdisk
           cloudInitNoCloud:
             userData: |-
