@@ -1,0 +1,27 @@
+---
+- name: Create blog in OpenShift
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_connection: local
+    objects_path: "./objects"
+
+  tasks:
+    - name: Find all YAML files in the directory
+      ansible.builtin.find:
+        paths: "{{ objects_path }}"
+        patterns: "*.yaml"
+        use_regex: false
+      register: yaml_files
+
+    - name: Sort YAML files alphabetically by path
+      ansible.builtin.set_fact:
+        sorted_yaml_files: "{{ yaml_files.files | sort(attribute='path') }}"
+
+    - name: Apply each YAML using the k8s module
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ item.path }}"
+      loop: "{{ sorted_yaml_files }}"
+      loop_control:
+        label: "{{ item.path }}"

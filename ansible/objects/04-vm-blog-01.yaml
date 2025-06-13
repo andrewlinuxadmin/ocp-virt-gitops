@@ -5,20 +5,20 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "5"
   labels:
-    app: webportal
+    app: blog
     kubevirt.io/dynamic-credentials-support: 'true'
     vm.kubevirt.io/template: centos-stream9-server-small
     vm.kubevirt.io/template.namespace: openshift
     vm.kubevirt.io/template.revision: '1'
     vm.kubevirt.io/template.version: v0.32.2
-  name: webportal-01
-  namespace: webportal
+  name: blog-01
+  namespace: blog
 spec:
   dataVolumeTemplates:
     - apiVersion: cdi.kubevirt.io/v1beta1
       kind: DataVolume
       metadata:
-        name: webportal-01
+        name: blog-01
       spec:
         sourceRef:
           kind: DataSource
@@ -37,8 +37,8 @@ spec:
         vm.kubevirt.io/workload: server
       creationTimestamp: null
       labels:
-        app: webportal
-        kubevirt.io/domain: webportal
+        app: blog
+        kubevirt.io/domain: blog
         kubevirt.io/size: small
         network.kubevirt.io/headlessService: headless
     spec:
@@ -58,14 +58,6 @@ spec:
             - name: cloudinitdisk
               disk:
                 bus: virtio
-            - name: configmap-disk
-              serial: CM0001
-              disk:
-                bus: virtio
-            - name: secret-disk
-              serial: SC0001
-              disk:
-                bus: virtio
           interfaces:
             - name: default
               masquerade: {}
@@ -76,7 +68,7 @@ spec:
       volumes:
         - name: rootdisk
           dataVolume:
-            name: webportal-01
+            name: blog-01
         - name: cloudinitdisk
           cloudInitNoCloud:
             userData: |-
@@ -87,13 +79,7 @@ spec:
                   cloud-user:redhat1234
                   root:redhat
                 expire: False
-              fqdn: webportal-01.example.com
-              bootcmd:
-                - mkdir -p /mnt/configmap
-                - mkdir -p /mnt/secret
-              mounts:
-                - [ /dev/disk/by-id/virtio-CM0001, /mnt/configmap, auto, "defaults,ro" ]
-                - [ /dev/disk/by-id/virtio-SC0001, /mnt/secret, auto, "defaults,ro" ]
+              fqdn: blog-01.example.com
               packages:
                 - httpd
                 - firewalld
@@ -110,10 +96,5 @@ spec:
                 - firewall-cmd --permanent --add-service=http
                 - firewall-cmd --permanent --add-service=https
                 - firewall-cmd --reload
-                - [ /bin/bash, -c, 'echo "<h1>VM GitOps com ArgoCD + Cloud-Init!</h1><br/><h2>Servidor: $(hostname)<br/>Env: $(cat /mnt/configmap/env)<br/>Datacenter: $(cat /mnt/configmap/datacenter)<br/>Database password: $(cat /mnt/secret/dbpassword)</h2>" > /var/www/html/index.html' ]
-        - name: configmap-disk
-          configMap:
-            name: cm-webportal
-        - name: secret-disk
-          secret:
-            secretName: sc-webportal
+                - [ /bin/bash, -c, 'echo "<h1>TAM Your Tech Blog</h1>" > /var/www/html/index.html' ]
+

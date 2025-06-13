@@ -3,13 +3,13 @@ apiVersion: route.openshift.io/v1
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
-  name: webportal
-  namespace: webportal
+  name: blog
+  namespace: blog
 spec:
   path: /
   to:
     kind: Service
-    name: svc-webportal
+    name: svc-blog
     weight: 100
   port:
     targetPort: 80
