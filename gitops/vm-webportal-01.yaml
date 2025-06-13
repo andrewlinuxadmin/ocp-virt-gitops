@@ -3,7 +3,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   annotations:
-    argocd.argoproj.io/sync-wave: "3"
+    argocd.argoproj.io/sync-wave: "5"
   labels:
     app: webportal
     kubevirt.io/dynamic-credentials-support: 'true'
@@ -14,6 +14,7 @@ metadata:
   name: webportal-01
   namespace: webportal
 spec:
+  running: true
   dataVolumeTemplates:
     - apiVersion: cdi.kubevirt.io/v1beta1
       kind: DataVolume
