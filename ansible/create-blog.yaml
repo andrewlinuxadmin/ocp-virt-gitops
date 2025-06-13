@@ -20,6 +20,7 @@
 
     - name: Apply each YAML using the k8s module
       kubernetes.core.k8s:
+        api_key: "{{ token }}"
         state: present
         src: "{{ item.path }}"
       loop: "{{ sorted_yaml_files }}"
