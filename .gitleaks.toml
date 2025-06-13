@@ -1,0 +1,41 @@
+title = "Gitleaks Config for GitOps webportal test credentials"
+version = 2
+
+[allowlist]
+description = "Ignore known test credentials"
+regexes = [
+  '''cloud-user:redhat1234''',
+  '''root:redhat''',
+  '''cmVkaGF0MTIzNA=='''  # base64 for redhat1234
+]
+
+[[allowlist.files]]
+description = "Ignore cloud-init passwords in VM definition"
+path = "gitops/vm-webportal-01.yaml"
+
+[[allowlist.files]]
+description = "Ignore base64 dbpassword in Kubernetes Secret"
+path = "gitops/secret-webportal-dbpassword.yaml"
+
+[[rules]]
+id = "generic-password"
+description = "Generic password assignment"
+regex = '''(?i)(password|passwd|pwd|chpasswd|login)[\s:=]+['"]?.{6,64}['"]?'''
+tags = ["password"]
+
+[[rules]]
+id = "cloudinit-password"
+description = "Passwords in cloud-init userData"
+regex = '''(?i)(cloud-user|root)\s*:\s*[^\\s\\n"']{6,}'''
+tags = ["cloud-init", "password"]
+
+[[rules]]
+id = "k8s-secret-base64"
+description = "Base64 encoded secrets in K8s Secrets"
+regex = '''(?i)data:\s*(?:\n\s*[a-zA-Z0-9-_]+:\s*)?[A-Za-z0-9+/=]{8,}'''
+tags = ["k8s", "secret", "base64"]
+
+[report]
+redact = true
+path = "gitleaks-report.json"
+format = "json"
