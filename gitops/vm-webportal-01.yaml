@@ -60,8 +60,12 @@ spec:
               name: cloudinitdisk
             - disk:
                 bus: virtio
-              name: environment-disk
-              serial: ENV001
+              name: configmap-disk
+              serial: CM0001
+            - disk:
+                bus: virtio
+              name: secret-disk
+              serial: SC0001
           interfaces:
             - masquerade: {}
               model: virtio
@@ -109,4 +113,7 @@ spec:
           name: cloudinitdisk
         - configMap:
             name: webportal
-          name: environment-disk
+          name: configmap-disk
+        - secret:
+            name: webportal
+          name: secret-disk

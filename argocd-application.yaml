@@ -14,7 +14,3 @@ spec:
     targetRevision: main
   sources: []
   project: default
-  syncPolicy:
-    syncOptions:
-      - CreateNamespace=true
-
