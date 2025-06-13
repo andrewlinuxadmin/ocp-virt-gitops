@@ -1,13 +1,17 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: patch-route-sa
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: sa-route-annotation-argo-link
   namespace: webportal
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: patch-route-role
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: role-route-annotation-argo-link
   namespace: webportal
 rules:
   - apiGroups: ["route.openshift.io"]
@@ -17,23 +21,26 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: patch-route-binding
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: rb-route-annotation-argo-link
   namespace: webportal
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: patch-route-role
+  name: role-route-annotation-argo-link
 subjects:
   - kind: ServiceAccount
-    name: patch-route-sa
+    name: sa-route-annotation-argo-link
     namespace: webportal
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: patch-route-link
+  name: job-route-annotation-argo-link
   namespace: webportal
   annotations:
+    argocd.argoproj.io/sync-wave: "4"
     argocd.argoproj.io/hook: PostSync
 spec:
   template:
@@ -49,4 +56,4 @@ spec:
               oc annotate route webportal -n webportal \
                 "link.argocd.argoproj.io/external-link=http://$host" --overwrite
       restartPolicy: OnFailure
-      serviceAccountName: patch-route-sa
+      serviceAccountName: sa-route-annotation-argo-link
