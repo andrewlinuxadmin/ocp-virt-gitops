@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: webportal
+  namespace: openshift-gitops
+spec:
+  destination:
+    name: ''
+    namespace: webportal
+    server: 'https://kubernetes.default.svc'
+  source:
+    path: gitops/objects
+    repoURL: 'https://github.com/andrewlinuxadmin/ocp-virt-gitops.git'
+    targetRevision: main
+  sources: []
+  project: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
