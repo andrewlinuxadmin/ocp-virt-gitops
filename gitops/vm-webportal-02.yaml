@@ -87,7 +87,7 @@ spec:
                   cloud-user:redhat1234
                   root:redhat
                 expire: False
-              fqdn: webportal-01.example.com
+              fqdn: webportal-02.example.com
               bootcmd:
                 - mkdir -p /mnt/configmap
                 - mkdir -p /mnt/secret
