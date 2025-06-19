@@ -1,0 +1,82 @@
+---
+{{- range .Values.namespaces }}
+{{- $ns := .name }}
+{{- range .vms }}
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  labels:
+    app: {{ .app }}
+    {{- if .folder }}
+    vm.openshift.io/folder: {{ .folder }}
+    {{- end }}
+  name: {{ .name }}
+  namespace: {{ $ns }}
+spec:
+  dataVolumeTemplates:
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: DataVolume
+      metadata:
+        name: {{ .name }}
+      spec:
+        sourceRef:
+          kind: DataSource
+          name: {{ .template | default $.Values.default.template }}
+          namespace: openshift-virtualization-os-images
+        storage:
+          resources:
+            requests:
+              storage: {{ .diskSize | default $.Values.default.diskSize }}
+  runStrategy: {{ .runStrategy | default $.Values.default.runStrategy }}
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: {{ .flavor | default $.Values.default.flavor }}
+        vm.kubevirt.io/os: centos-stream9
+        vm.kubevirt.io/workload: server
+      creationTimestamp: null
+      labels:
+        app: {{ .app }}
+        kubevirt.io/domain: {{ .app }}
+        kubevirt.io/size: {{ .flavor | default $.Values.default.flavor }}
+        network.kubevirt.io/headlessService: headless
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: {{ .cores | default $.Values.default.cores }}
+          sockets: {{ .sockets | default $.Values.default.sockets }}
+          threads: 1
+        memory:
+          guest: {{ .ram | default $.Values.default.ram }}
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: rootdisk
+          dataVolume:
+            name: {{ .name }}
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              ssh_pwauth: True
+              chpasswd:
+                list: |
+                  cloud-user:redhat1234
+                expire: False
+---
+{{- end }}
+{{- end }}

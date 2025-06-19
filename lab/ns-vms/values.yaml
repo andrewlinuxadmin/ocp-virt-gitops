@@ -1,0 +1,36 @@
+default:
+  template: centos-stream9
+  diskSize: 30Gi
+  runStrategy: RerunOnFailure
+  flavor: small
+  workload: server
+  sockets: 1
+  cores: 1
+  ram: 2Gi
+generateNamespaces: true
+namespaces:
+  - name: erp
+    vms:
+      - name: rh
+        app: rh
+        folder: backoffice
+      - name: contab
+        app: contab
+        folder: backoffice
+      - name: juridico
+        app: juridico
+        folder: backoffice
+      - name: estoque
+        app: estoque
+        folder: frontoffice
+      - name: caixa-01
+        app: caixa
+        folder: frontoffice
+      - name: caixa-02
+        app: caixa
+        folder: frontoffice
+
+  - name: crm
+    vms:
+      - name: crm
+        app: crm
