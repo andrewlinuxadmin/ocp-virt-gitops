@@ -1,0 +1,8 @@
+<h1>VM GitOps com ArgoCD + Cloud-Init!</h1>
+<br/>
+<h2>Servidor: $(hostname)</h2>
+<h3>Informações via configmap:</h3>
+<p>Env: $(cat /mnt/configmap/env)<br/>
+Datacenter: $(cat /mnt/configmap/datacenter)</p>
+<h3>Informações via secret:</h3>
+<p>Database password: $(cat /mnt/secret/dbpassword)</p>
