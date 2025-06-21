@@ -110,7 +110,7 @@ spec:
                 - firewall-cmd --permanent --add-service=http
                 - firewall-cmd --permanent --add-service=https
                 - firewall-cmd --reload
-                - [ /bin/bash, -c, 'echo "<h1>VM GitOps com ArgoCD + Cloud-Init!</h1><br/><h2>Servidor: $(hostname)</h2><h3>Informações via configmap:</h3><p>Env: $(cat /mnt/configmap/env)<br/>Datacenter: $(cat /mnt/configmap/datacenter)</p><h3>Informações via secret:</h3><p>Database password: $(cat /mnt/secret/dbpassword)</p>" > /var/www/html/index.html' ]
+                - [ /bin/bash, -c, 'echo "<h1>VM GitOps com ArgoCD + Cloud-Init!</h1><br/><h2>Servidor: $(hostname)</h2><h3>Informações via configmap:</h3><p><b>env:</b> $(cat /mnt/configmap/env)<br/><b>datacenter:</b> $(cat /mnt/configmap/datacenter)</p><h3>Informações via secret:</h3><p><b>dbpassword:</b> $(cat /mnt/secret/dbpassword)</p>" > /var/www/html/index.html' ]
         - name: configmap-disk
           configMap:
             name: cm-webportal
