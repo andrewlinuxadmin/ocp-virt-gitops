@@ -54,6 +54,6 @@ spec:
             - |
               host=$(oc get route webportal -n webportal -o jsonpath='{.spec.host}')
               oc annotate route webportal -n webportal \
-                "link.argocd.argoproj.io/external-link=http://$host" --overwrite
+                "link.argocd.argoproj.io/external-link=https://$host" --overwrite
       restartPolicy: OnFailure
       serviceAccountName: sa-route-annotation-argo-link
